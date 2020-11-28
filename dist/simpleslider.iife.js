@@ -59,71 +59,19 @@ var SimpleSlider = (function (exports) {
   /** @class */
   function () {
     function Actors(props, lastSlideIndex) {
-      this._active = [];
-      this._prev = [];
-      this._next = [];
-      this._active = props.active;
-      this._prev = props.prev;
-      this._next = props.next;
-      this._lastIndex = lastSlideIndex;
+      this.active = [];
+      this.prev = [];
+      this.next = [];
+      this.active = props.active;
+      this.prev = props.prev;
+      this.next = props.next;
+      this.lastIndex = lastSlideIndex;
     }
-
-    Object.defineProperty(Actors.prototype, "active", {
-      /**
-       * @description get the list of the active elements
-       */
-      get: function () {
-        return this._active;
-      },
-      set: function (values) {
-        this._active = values;
-      },
-      enumerable: false,
-      configurable: true
-    });
-    Object.defineProperty(Actors.prototype, "next", {
-      /**
-       * @description get the list of the next elements
-       */
-      get: function () {
-        return this._next;
-      },
-      set: function (values) {
-        this._next = values;
-      },
-      enumerable: false,
-      configurable: true
-    });
-    Object.defineProperty(Actors.prototype, "prev", {
-      /**
-       * @description get the list of the previous elements
-       */
-      get: function () {
-        return this._prev;
-      },
-      set: function (values) {
-        this._prev = values;
-      },
-      enumerable: false,
-      configurable: true
-    });
-    Object.defineProperty(Actors.prototype, "lastIndex", {
-      /**
-       * @description get the index of the last element
-       */
-      get: function () {
-        return this._lastIndex;
-      },
-      set: function (value) {
-        this._lastIndex = value;
-      },
-      enumerable: false,
-      configurable: true
-    });
     /**
      * @description increase by one the values in an array up to the last index if it is bigger then the last index then it becomes zero
      * @param indexes array of numbers
      */
+
 
     Actors.prototype._increaseValue = function (indexes) {
       var _this = this;
