@@ -93,12 +93,12 @@ var Actors = /** @class */ (function () {
                 case Direction.Next:
                     this.active = this._increaseValue(this.active);
                     this.next = this._increaseValue(this.next);
-                    this.prev = this._increaseValue(this.next);
+                    this.prev = this._increaseValue(this.prev);
                     break;
                 case Direction.Prev:
                     this.active = this._decreaseValue(this.active);
                     this.next = this._decreaseValue(this.next);
-                    this.prev = this._decreaseValue(this.next);
+                    this.prev = this._decreaseValue(this.prev);
                     break;
             }
         },
