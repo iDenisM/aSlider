@@ -63,7 +63,7 @@ export class SliderWrapper {
       this._animating = true;
       this._direction = direction;
       if (direction === Direction.Prev && this._slides.length === 2)
-        this._updateSlidesClasses(this._slideList.prev, Classes.slides.prev);
+        this._updateSlidesClasses(this._slideList.next, Classes.slides.prev);
       classAdd(this._wrapElem, direction === Direction.Prev ? Classes.prev : Classes.next);
     }
   }
