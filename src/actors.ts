@@ -8,60 +8,16 @@ import {
  * @description Create the actors that are used to get the index of acting sliders
  */
 export class Actors {
-  private _active: number[] = [];
-  private _prev: number[] = [];
-  private _next: number[] = [];
-  private _lastIndex: number;
+  public active: number[] = [];
+  public prev: number[] = [];
+  public next: number[] = [];
+  public lastIndex: number;
 
   constructor(props: ICurrentActors, lastSlideIndex: number) {
-    this._active = props.active;
-    this._prev = props.prev;
-    this._next = props.next;
-    this._lastIndex = lastSlideIndex;
-  }
-
-  /**
-   * @description get the list of the active elements
-   */
-  get active() {
-    return this._active;
-  }
-
-  /**
-   * @description get the list of the next elements
-   */
-  get next() {
-    return this._next;
-  }
-
-  /**
-   * @description get the list of the previous elements
-   */
-  get prev() {
-    return this._prev;
-  }
-
-  /**
-   * @description get the index of the last element
-   */
-  get lastIndex() {
-    return this._lastIndex;
-  }
-
-  set active(values: number[]) {
-    this._active = values;
-  }
-
-  set next(values: number[]) {
-    this._next = values;
-  }
-
-  set prev(values: number[]) {
-    this._prev = values;
-  }
-
-  set lastIndex(value: number) {
-    this._lastIndex = value;
+    this.active = props.active;
+    this.prev = props.prev;
+    this.next = props.next;
+    this.lastIndex = lastSlideIndex;
   }
 
   /**
