@@ -67,6 +67,13 @@ export class SliderWrapper {
       classAdd(this._wrapElem, direction === Direction.Prev ? Classes.prev : Classes.next);
     }
   }
+  
+  /**
+   * @description Jumps to a slide
+   */
+  set jumpTo(index: number) {
+
+  }
 
   private _animationEnd() {
     this._actors.change = this.movedTo;
