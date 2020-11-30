@@ -72,7 +72,11 @@ export class SliderWrapper {
    * @description Jumps to a slide
    */
   set jumpTo(index: number) {
-
+    if (this._actors.active.indexOf(index) === -1) {
+      // Check direction
+      // Arange the slides in order
+      // Trigger the animation
+    }
   }
 
   private _animationEnd() {
