@@ -4,6 +4,7 @@ export const Classes = {
   wrapper: 'slides',
   prevBtn: 'control_prev',
   nextBtn: 'control_next',
+  navBtn: 'nav_elem',
   slides: {
     slide: 'slide',
     active: 'slide_active',

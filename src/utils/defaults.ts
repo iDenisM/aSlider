@@ -4,6 +4,7 @@ export interface IOptions {
   controlsSelector?: string | HTMLElement,
   wrapperSelector: string,
   controls: IControls,
+  navigation: string
   slides: ISlides
 }
 
@@ -25,6 +26,7 @@ export const Options: IOptions = {
     prevBtnSelector: '.'.concat(Classes.prevBtn),
     nextBtnSelector: '.'.concat(Classes.nextBtn)
   },
+  navigation: '.'.concat(Classes.navBtn),
   slides: {
     slideSelector: '.'.concat(Classes.slides.slide),
     activeSlideSelector: '.'.concat(Classes.slides.active),
