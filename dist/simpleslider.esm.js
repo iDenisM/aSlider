@@ -4,6 +4,7 @@ var Classes = {
     wrapper: 'slides',
     prevBtn: 'control_prev',
     nextBtn: 'control_next',
+    navBtn: 'nav_elem',
     slides: {
         slide: 'slide',
         active: 'slide_active',
@@ -18,6 +19,7 @@ var Options = {
         prevBtnSelector: '.'.concat(Classes.prevBtn),
         nextBtnSelector: '.'.concat(Classes.nextBtn)
     },
+    navigation: '.'.concat(Classes.navBtn),
     slides: {
         slideSelector: '.'.concat(Classes.slides.slide),
         activeSlideSelector: '.'.concat(Classes.slides.active),
@@ -132,18 +134,18 @@ var classRemove = function (elem, className) {
 
 var SliderWrapper = /** @class */ (function () {
     function SliderWrapper(wrapperElement, options) {
-        this._wrapElem = wrapperElement;
-        this._options = options;
-        var slides = this._slides = this._wrapElem.querySelectorAll(this._options.slides.slideSelector);
-        this._slidesIndex = {
+        this._elem = wrapperElement;
+        var slides = this._slides = this._elem.querySelectorAll(options.slides.slideSelector);
+        var slidesIndex = {
             active: [0],
             next: [1],
             prev: [slides.length - 1]
         };
         this._direction = Direction.Idle;
-        this._actors = new Actors(this._slidesIndex, slides.length - 1);
+        this._jumpTo = 0;
+        this._actors = new Actors(slidesIndex, slides.length - 1);
         this._animating = false;
-        this._slideList = this._createSlideList(this._slidesIndex);
+        this._slideList = this._createSlideList(slidesIndex);
         this._updateAllSlidesClasses();
         if (slides.length) {
             this._eventsHandler();
@@ -158,7 +160,7 @@ var SliderWrapper = /** @class */ (function () {
         };
     };
     SliderWrapper.prototype._eventsHandler = function () {
-        this._wrapElem.addEventListener('transitionend', this._animationEnd.bind(this), false);
+        this._elem.addEventListener('transitionend', this._animationEnd.bind(this), false);
     };
     Object.defineProperty(SliderWrapper.prototype, "movedTo", {
         /**
@@ -176,7 +178,34 @@ var SliderWrapper = /** @class */ (function () {
                 this._direction = direction;
                 if (direction === Direction.Prev && this._slides.length === 2)
                     this._updateSlidesClasses(this._slideList.next, Classes.slides.prev);
-                classAdd(this._wrapElem, direction === Direction.Prev ? Classes.prev : Classes.next);
+                classAdd(this._elem, direction === Direction.Prev ? Classes.prev : Classes.next);
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(SliderWrapper.prototype, "jumpTo", {
+        get: function () {
+            return this._jumpTo;
+        },
+        /**
+         * @description Jumps to a slide
+         */
+        set: function (index) {
+            var activeActors = this._actors.active;
+            if (activeActors.indexOf(index) === -1) {
+                this._jumpTo = index;
+                var direction = activeActors[activeActors.length - 1] > index ? Direction.Prev : Direction.Next;
+                var slidesToArange = direction === Direction.Prev ? this._actors.prev : this._actors.next;
+                for (var i = slidesToArange[slidesToArange.length - 1] + 1; i <= index; i++) {
+                    slidesToArange.push(i);
+                }
+                //TODO: THIS IMPLEMENTATION DOES NOT WORK
+                //TODO: SHOULD TRY TO CREATE A LIST OF NUMBERS FOR THE ELEMENTS TO SCROLL
+                for (var i = 0; i < slidesToArange.length; i++) {
+                    this._slides[slidesToArange[i]].style.transform = "translate3d(" + (direction === Direction.Prev ? '-' : '') + (i + 1) * 100 + "%, 0, 0)";
+                }
+                // Trigger the animation to slide of index
             }
         },
         enumerable: false,
@@ -185,7 +214,7 @@ var SliderWrapper = /** @class */ (function () {
     SliderWrapper.prototype._animationEnd = function () {
         this._actors.change = this.movedTo;
         this._updateAllSlidesClasses();
-        classRemove(this._wrapElem, this.movedTo === Direction.Prev ? Classes.prev : Classes.next);
+        classRemove(this._elem, this.movedTo === Direction.Prev ? Classes.prev : Classes.next);
         this._animating = false;
     };
     SliderWrapper.prototype._updateAllSlidesClasses = function () {
@@ -223,15 +252,22 @@ var Slider = /** @class */ (function () {
         this.options = options != null ? Object.assign(Options, options) : Options;
         var wrapperElement = this.element.querySelector(this.options.wrapperSelector);
         var wrapper = new SliderWrapper(wrapperElement, this.options);
-        this._bindMoveArrowEvents(wrapper);
+        this._handleEvents(wrapper);
     }
-    Slider.prototype._bindMoveArrowEvents = function (wrapper) {
-        var prevBtn = this.element.querySelector(this.options.controls.prevBtnSelector);
-        var nextBtn = this.element.querySelector(this.options.controls.nextBtnSelector);
-        if (nextBtn)
-            nextBtn.addEventListener('click', function () { return wrapper.movedTo = Direction.Next; }, false);
-        if (prevBtn)
-            prevBtn.addEventListener('click', function () { return wrapper.movedTo = Direction.Prev; }, false);
+    Slider.prototype._handleEvents = function (wrapper) {
+        var prevButton = this.element.querySelector(this.options.controls.prevBtnSelector);
+        var nextButton = this.element.querySelector(this.options.controls.nextBtnSelector);
+        var navigationButtonsList = this.element.querySelectorAll(this.options.navigation);
+        if (nextButton)
+            nextButton.addEventListener('click', function () { return wrapper.movedTo = Direction.Next; }, false);
+        if (prevButton)
+            prevButton.addEventListener('click', function () { return wrapper.movedTo = Direction.Prev; }, false);
+        var _loop_1 = function (i) {
+            navigationButtonsList[i].addEventListener('click', function () { return wrapper.jumpTo = i; }, false);
+        };
+        for (var i = 0; i < navigationButtonsList.length; i++) {
+            _loop_1(i);
+        }
     };
     return Slider;
 }());

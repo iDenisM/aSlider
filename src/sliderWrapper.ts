@@ -80,6 +80,9 @@ export class SliderWrapper {
       this._jumpTo = index;
       let direction = activeActors[activeActors.length - 1] > index ? Direction.Prev : Direction.Next;
       let slidesToArange = direction === Direction.Prev ? this._actors.prev : this._actors.next;
+      for (let i = slidesToArange[slidesToArange.length - 1] + 1; i <= index; i++) {
+        slidesToArange.push(i);
+      }
       for (let i = 0; i < slidesToArange.length; i++) {
         this._slides[slidesToArange[i]].style.transform = `translate3d(${direction === Direction.Prev ? '-' : ''}${(i + 1) * 100}%, 0, 0)`;
       }
