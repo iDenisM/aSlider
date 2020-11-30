@@ -23,7 +23,7 @@ export class Slider {
     if (prevButton) prevButton.addEventListener('click', () => wrapper.movedTo = Direction.Prev, false);
 
     for (let i = 0; i < navigationButtonsList.length; i++) {
-      navigationButtonsList[i].addEventListener('click', () => wrapper.jumpTo = i);
+      navigationButtonsList[i].addEventListener('click', () => wrapper.jumpTo = i, false);
     }
   }
 }

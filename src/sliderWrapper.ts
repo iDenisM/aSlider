@@ -9,27 +9,26 @@ import { classAdd , classRemove } from "./utils/shortcuts";
 
 export class SliderWrapper {
   private _wrapElem: HTMLElement;
-  private _options: IOptions;
   private _slides: NodeListOf<HTMLElement>;
   private _actors: Actors;
   private _slideList: ISlide;
   private _animating: boolean;
   private _direction: Direction;
-  private _slidesIndex: ICurrentActors;
+  private _jumpTo: number;
 
   constructor(wrapperElement: HTMLElement, options: IOptions) {
     this._wrapElem = wrapperElement;
-    this._options = options;
-    let slides = this._slides = this._wrapElem.querySelectorAll(this._options.slides.slideSelector);
-    this._slidesIndex = {
+    let slides = this._slides = this._wrapElem.querySelectorAll(options.slides.slideSelector);
+    const _slidesIndex = {
       active: [0],
       next: [1],
       prev: [slides.length - 1]
     };
     this._direction = Direction.Idle;
-    this._actors = new Actors(this._slidesIndex, slides.length - 1);
+    this._jumpTo = 0;
+    this._actors = new Actors(_slidesIndex, slides.length - 1);
     this._animating = false;
-    this._slideList = this._createSlideList(this._slidesIndex);
+    this._slideList = this._createSlideList(_slidesIndex);
     this._updateAllSlidesClasses();
     if (slides.length) {
       this._eventsHandler();
@@ -67,12 +66,17 @@ export class SliderWrapper {
       classAdd(this._wrapElem, direction === Direction.Prev ? Classes.prev : Classes.next);
     }
   }
+
+  get jumpTo() {
+    return this._jumpTo;
+  }
   
   /**
    * @description Jumps to a slide
    */
   set jumpTo(index: number) {
     if (this._actors.active.indexOf(index) === -1) {
+      this._jumpTo = index;
       // Check direction
       // Arange the slides in order
       // Trigger the animation
