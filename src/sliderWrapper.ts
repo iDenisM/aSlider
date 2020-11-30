@@ -8,7 +8,7 @@ import { Actors } from './actors';
 import { classAdd , classRemove } from "./utils/shortcuts";
 
 export class SliderWrapper {
-  private _wrapElem: HTMLElement;
+  private _elem: HTMLElement;
   private _slides: NodeListOf<HTMLElement>;
   private _actors: Actors;
   private _slideList: ISlide;
@@ -17,18 +17,18 @@ export class SliderWrapper {
   private _jumpTo: number;
 
   constructor(wrapperElement: HTMLElement, options: IOptions) {
-    this._wrapElem = wrapperElement;
-    let slides = this._slides = this._wrapElem.querySelectorAll(options.slides.slideSelector);
-    const _slidesIndex = {
+    this._elem = wrapperElement;
+    let slides = this._slides = this._elem.querySelectorAll(options.slides.slideSelector);
+    const slidesIndex = {
       active: [0],
       next: [1],
       prev: [slides.length - 1]
     };
     this._direction = Direction.Idle;
     this._jumpTo = 0;
-    this._actors = new Actors(_slidesIndex, slides.length - 1);
+    this._actors = new Actors(slidesIndex, slides.length - 1);
     this._animating = false;
-    this._slideList = this._createSlideList(_slidesIndex);
+    this._slideList = this._createSlideList(slidesIndex);
     this._updateAllSlidesClasses();
     if (slides.length) {
       this._eventsHandler();
@@ -44,7 +44,7 @@ export class SliderWrapper {
   }
 
   private _eventsHandler() {
-    this._wrapElem.addEventListener('transitionend', this._animationEnd.bind(this), false);
+    this._elem.addEventListener('transitionend', this._animationEnd.bind(this), false);
   }
 
   /**
@@ -63,7 +63,7 @@ export class SliderWrapper {
       this._direction = direction;
       if (direction === Direction.Prev && this._slides.length === 2)
         this._updateSlidesClasses(this._slideList.next, Classes.slides.prev);
-      classAdd(this._wrapElem, direction === Direction.Prev ? Classes.prev : Classes.next);
+      classAdd(this._elem, direction === Direction.Prev ? Classes.prev : Classes.next);
     }
   }
 
@@ -75,18 +75,22 @@ export class SliderWrapper {
    * @description Jumps to a slide
    */
   set jumpTo(index: number) {
-    if (this._actors.active.indexOf(index) === -1) {
+    let activeActors = this._actors.active;
+    if (activeActors.indexOf(index) === -1) {
       this._jumpTo = index;
-      // Check direction
-      // Arange the slides in order
-      // Trigger the animation
+      let direction = activeActors[activeActors.length - 1] > index ? Direction.Prev : Direction.Next;
+      let slidesToArange = direction === Direction.Prev ? this._actors.prev : this._actors.next;
+      for (let i = 0; i < slidesToArange.length; i++) {
+        this._slides[slidesToArange[i]].style.transform = `translate3d(${direction === Direction.Prev ? '-' : ''}${(i + 1) * 100}%, 0, 0)`;
+      }
+      // Trigger the animation to slide of index
     }
   }
 
   private _animationEnd() {
     this._actors.change = this.movedTo;
     this._updateAllSlidesClasses();
-    classRemove(this._wrapElem, this.movedTo === Direction.Prev ? Classes.prev : Classes.next);
+    classRemove(this._elem, this.movedTo === Direction.Prev ? Classes.prev : Classes.next);
     this._animating = false;
   }
 
