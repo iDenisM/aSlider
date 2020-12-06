@@ -10,5 +10,6 @@ export const Classes = {
     active: 'slide_active',
     prev: 'slide_prev',
     next: 'slide_next'
-  }
+  },
+  jumping: 'jumping'
 }

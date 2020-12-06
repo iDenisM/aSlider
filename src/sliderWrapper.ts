@@ -89,7 +89,7 @@ export class SliderWrapper {
       for (let i = 0; i < slidesToArange.length; i++) {
         this._slides[slidesToArange[i]].style.transform = `translate3d(${direction === Direction.Prev ? '-' : ''}${(i + 1) * 100}%, 0, 0)`;
       }
-      classAdd(this._elem, 'jumping');
+      classAdd(this._elem, Classes.jumping);
       let multiplier = direction === Direction.Prev ? this._actors.active[0] - index : index - this._actors.active[0];
       this._elem.style.transform = `translate3d(${direction === Direction.Prev ? '' : '-'}${100 * multiplier}%, 0, 0)`;
     }
@@ -121,7 +121,7 @@ export class SliderWrapper {
       for (let i = 0; i < this._slides.length; i++) {
         this._slides[i].style.removeProperty('transform');
       }
-      classRemove(this._elem, 'jumping');
+      classRemove(this._elem, Classes.jumping);
       this._elem.style.removeProperty('transform');
     }
     this._updateSlidesClasses(tempSlideList.next, Classes.slides.next);
