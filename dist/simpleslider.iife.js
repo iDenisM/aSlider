@@ -174,6 +174,7 @@ var SimpleSlider = (function (exports) {
       this._jumpTo = 0;
       this._actors = new Actors(slidesIndex, slides.length - 1);
       this._animating = false;
+      this._isJumping = false;
       this._slideList = this._createSlideList(slidesIndex);
 
       this._updateAllSlidesClasses();
@@ -231,12 +232,13 @@ var SimpleSlider = (function (exports) {
       },
 
       /**
-       * @description Jumps to a slide
+       * @description Set the slide to jump towards
        */
       set: function (index) {
         var activeActors = this._actors.active;
 
         if (activeActors.indexOf(index) === -1) {
+          this._isJumping = true;
           this._jumpTo = index;
           var direction = activeActors[activeActors.length - 1] > index ? Direction.Prev : Direction.Next;
           var slidesToArange = direction === Direction.Prev ? this._actors.prev : this._actors.next;
@@ -247,11 +249,10 @@ var SimpleSlider = (function (exports) {
 
           for (var i = 0; i < slidesToArange.length; i++) {
             this._slides[slidesToArange[i]].style.transform = "translate3d(" + (direction === Direction.Prev ? '-' : '') + (i + 1) * 100 + "%, 0, 0)";
-          } // Trigger the animation to slide of index
-
+          }
 
           var multiplier = direction === Direction.Prev ? this._actors.active[0] - index : index - this._actors.active[0];
-          this._elem.style.transform = "translate3d(" + (direction === Direction.Prev ? '' : '-') + 100 * multiplier + "%, 0, 0)"; // this._elem.style.transform = `translate3d(${100 * multiplier}%, 0, 0)`;
+          this._elem.style.transform = "translate3d(" + (direction === Direction.Prev ? '' : '-') + 100 * multiplier + "%, 0, 0)";
         }
       },
       enumerable: false,
@@ -259,11 +260,16 @@ var SimpleSlider = (function (exports) {
     });
 
     SliderWrapper.prototype._animationEnd = function () {
-      this._actors.change = this.movedTo;
+      if (this._isJumping) {
+        this._actors.change = this.movedTo;
+      } else {
+        this._actors.changeTo = this.jumpTo;
+      }
 
       this._updateAllSlidesClasses();
 
       classRemove(this._elem, this.movedTo === Direction.Prev ? Classes.prev : Classes.next);
+      this._isJumping = false;
       this._animating = false;
     };
 
@@ -281,6 +287,12 @@ var SimpleSlider = (function (exports) {
       this._updateSlidesClasses(idleList);
 
       this._updateSlidesClasses(tempSlideList.active, Classes.slides.active);
+
+      if (this._isJumping) {
+        for (var i = 0; i < this._slides.length; i++) {
+          this._slides[i].style.removeProperty('transform');
+        }
+      }
 
       this._updateSlidesClasses(tempSlideList.next, Classes.slides.next);
 

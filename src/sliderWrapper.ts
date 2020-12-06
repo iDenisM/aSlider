@@ -15,6 +15,7 @@ export class SliderWrapper {
   private _animating: boolean;
   private _direction: Direction;
   private _jumpTo: number;
+  private _isJumping: boolean;
 
   constructor(wrapperElement: HTMLElement, options: IOptions) {
     this._elem = wrapperElement;
@@ -28,6 +29,7 @@ export class SliderWrapper {
     this._jumpTo = 0;
     this._actors = new Actors(slidesIndex, slides.length - 1);
     this._animating = false;
+    this._isJumping = false;
     this._slideList = this._createSlideList(slidesIndex);
     this._updateAllSlidesClasses();
     if (slides.length) {
@@ -72,11 +74,12 @@ export class SliderWrapper {
   }
   
   /**
-   * @description Jumps to a slide
+   * @description Set the slide to jump towards
    */
   set jumpTo(index: number) {
     let activeActors = this._actors.active;
     if (activeActors.indexOf(index) === -1) {
+      this._isJumping = true;
       this._jumpTo = index;
       let direction = activeActors[activeActors.length - 1] > index ? Direction.Prev : Direction.Next;
       let slidesToArange = direction === Direction.Prev ? this._actors.prev : this._actors.next;
@@ -86,17 +89,21 @@ export class SliderWrapper {
       for (let i = 0; i < slidesToArange.length; i++) {
         this._slides[slidesToArange[i]].style.transform = `translate3d(${direction === Direction.Prev ? '-' : ''}${(i + 1) * 100}%, 0, 0)`;
       }
-      // Trigger the animation to slide of index
       let multiplier = direction === Direction.Prev ? this._actors.active[0] - index : index - this._actors.active[0];
       this._elem.style.transform = `translate3d(${direction === Direction.Prev ? '' : '-'}${100 * multiplier}%, 0, 0)`
-      // this._elem.style.transform = `translate3d(${100 * multiplier}%, 0, 0)`;
+      
     }
   }
 
   private _animationEnd() {
-    this._actors.change = this.movedTo;
+    if (this._isJumping) {
+      this._actors.change = this.movedTo;
+    } else {
+      this._actors.changeTo = this.jumpTo;
+    }
     this._updateAllSlidesClasses();
     classRemove(this._elem, this.movedTo === Direction.Prev ? Classes.prev : Classes.next);
+    this._isJumping = false;
     this._animating = false;
   }
 
@@ -110,6 +117,11 @@ export class SliderWrapper {
 
     this._updateSlidesClasses(idleList);
     this._updateSlidesClasses(tempSlideList.active, Classes.slides.active);
+    if (this._isJumping) {
+      for (let i = 0; i < this._slides.length; i++) {
+        this._slides[i].style.removeProperty('transform');
+      }
+    }
     this._updateSlidesClasses(tempSlideList.next, Classes.slides.next);
     if (this._slides.length > 2)
       this._updateSlidesClasses(tempSlideList.prev, Classes.slides.prev);
