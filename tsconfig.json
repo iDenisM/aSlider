@@ -14,6 +14,7 @@
     "sourceMap": true,
     "importHelpers": true,
     "baseUrl": "./",
-    "rootDir": "./"
+    "rootDir": "./",
+    "esModuleInterop": true
   }
 }

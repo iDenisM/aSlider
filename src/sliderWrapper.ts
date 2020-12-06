@@ -1,14 +1,14 @@
-import { Classes } from "./utils/constants";
+import { Classes } from './utils/constants';
 import { 
   IOptions,
   ICurrentActors,
   ISlide, 
-  Direction } from "./utils/defaults";
+  Direction } from './utils/defaults';
 import { Actors } from './actors';
-import { classAdd , classRemove } from "./utils/shortcuts";
+import { classAdd , classRemove } from './utils/shortcuts';
 
 export class SliderWrapper {
-  private _elem: HTMLElement;
+  private _elememnt: HTMLElement;
   private _slides: NodeListOf<HTMLElement>;
   private _actors: Actors;
   private _slideList: ISlide;
@@ -17,9 +17,9 @@ export class SliderWrapper {
   private _jumpTo: number;
   private _isJumping: boolean;
 
-  constructor(wrapperElement: HTMLElement, options: IOptions) {
-    this._elem = wrapperElement;
-    let slides = this._slides = this._elem.querySelectorAll(options.slides.slideSelector);
+  constructor(element: HTMLElement, options: IOptions) {
+    this._elememnt = element;
+    let slides = this._slides = this._elememnt.querySelectorAll(options.slides.slideSelector);
     const slidesIndex = {
       active: [0],
       next: [1],
@@ -46,7 +46,7 @@ export class SliderWrapper {
   }
 
   private _eventsHandler() {
-    this._elem.addEventListener('transitionend', this._animationEnd.bind(this), false);
+    this._elememnt.addEventListener('transitionend', this._animationEnd.bind(this), false);
   }
 
   /**
@@ -65,7 +65,7 @@ export class SliderWrapper {
       this._direction = direction;
       if (direction === Direction.Prev && this._slides.length === 2)
         this._updateSlidesClasses(this._slideList.next, Classes.slides.prev);
-      classAdd(this._elem, direction === Direction.Prev ? Classes.prev : Classes.next);
+      classAdd(this._elememnt, direction === Direction.Prev ? Classes.prev : Classes.next);
     }
   }
 
@@ -89,9 +89,9 @@ export class SliderWrapper {
       for (let i = 0; i < slidesToArange.length; i++) {
         this._slides[slidesToArange[i]].style.transform = `translate3d(${direction === Direction.Prev ? '-' : ''}${(i + 1) * 100}%, 0, 0)`;
       }
-      classAdd(this._elem, Classes.jumping);
+      classAdd(this._elememnt, Classes.jumping);
       let multiplier = direction === Direction.Prev ? this._actors.active[0] - index : index - this._actors.active[0];
-      this._elem.style.transform = `translate3d(${direction === Direction.Prev ? '' : '-'}${100 * multiplier}%, 0, 0)`;
+      this._elememnt.style.transform = `translate3d(${direction === Direction.Prev ? '' : '-'}${100 * multiplier}%, 0, 0)`;
     }
   }
 
@@ -102,7 +102,7 @@ export class SliderWrapper {
       this._actors.change = this.movedTo;
     }
     this._updateAllSlidesClasses();
-    classRemove(this._elem, this.movedTo === Direction.Prev ? Classes.prev : Classes.next);
+    classRemove(this._elememnt, this.movedTo === Direction.Prev ? Classes.prev : Classes.next);
     this._isJumping = false;
     this._animating = false;
   }
@@ -121,8 +121,8 @@ export class SliderWrapper {
       for (let i = 0; i < this._slides.length; i++) {
         this._slides[i].style.removeProperty('transform');
       }
-      classRemove(this._elem, Classes.jumping);
-      this._elem.style.removeProperty('transform');
+      classRemove(this._elememnt, Classes.jumping);
+      this._elememnt.style.removeProperty('transform');
     }
     this._updateSlidesClasses(tempSlideList.next, Classes.slides.next);
     if (this._slides.length > 2)

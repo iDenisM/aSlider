@@ -1,17 +1,21 @@
-import { Options, IOptions } from "./utils/defaults";
-import { SliderWrapper } from "./sliderWrapper";
+import { Options, IOptions } from './utils/defaults';
+import { SliderWrapper } from './sliderWrapper';
 import { Direction } from './utils/defaults';
 
 export class Slider {
   element: HTMLElement;
   options: IOptions;
 
-  constructor(selector: string | HTMLElement, options?: IOptions) {
-    this.element = typeof selector === 'string' ? document.querySelector(selector) as HTMLElement : selector;
-    this.options = options != null ? Object.assign(Options, options) : Options;
-    const wrapperElement = this.element.querySelector(this.options.wrapperSelector) as HTMLUListElement;
+  constructor(element: HTMLElement, options?: IOptions | null) {
+    if (!(element instanceof Element)) {
+      throw new Error('Wrong element has been passed');
+    }
+    this.element = element;
+    this.options = { ...Options, ...options };
+    const wrapperElement = this.element.querySelector(this.options.wrapperSelector) as HTMLElement;
     const wrapper = new SliderWrapper(wrapperElement, this.options);
     this._handleEvents(wrapper);
+    this.element.dataset.aslider = 'initialized';
   }
   
   _handleEvents(wrapper: SliderWrapper) {
