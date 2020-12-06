@@ -251,6 +251,7 @@ var SimpleSlider = (function (exports) {
             this._slides[slidesToArange[i]].style.transform = "translate3d(" + (direction === Direction.Prev ? '-' : '') + (i + 1) * 100 + "%, 0, 0)";
           }
 
+          classAdd(this._elem, 'jumping');
           var multiplier = direction === Direction.Prev ? this._actors.active[0] - index : index - this._actors.active[0];
           this._elem.style.transform = "translate3d(" + (direction === Direction.Prev ? '' : '-') + 100 * multiplier + "%, 0, 0)";
         }
@@ -261,9 +262,9 @@ var SimpleSlider = (function (exports) {
 
     SliderWrapper.prototype._animationEnd = function () {
       if (this._isJumping) {
-        this._actors.change = this.movedTo;
-      } else {
         this._actors.changeTo = this.jumpTo;
+      } else {
+        this._actors.change = this.movedTo;
       }
 
       this._updateAllSlidesClasses();
@@ -292,6 +293,10 @@ var SimpleSlider = (function (exports) {
         for (var i = 0; i < this._slides.length; i++) {
           this._slides[i].style.removeProperty('transform');
         }
+
+        classRemove(this._elem, 'jumping');
+
+        this._elem.style.removeProperty('transform');
       }
 
       this._updateSlidesClasses(tempSlideList.next, Classes.slides.next);
