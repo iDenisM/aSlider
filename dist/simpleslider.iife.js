@@ -243,14 +243,15 @@ var SimpleSlider = (function (exports) {
 
           for (var i = slidesToArange[slidesToArange.length - 1] + 1; i <= index; i++) {
             slidesToArange.push(i);
-          } //TODO: THIS IMPLEMENTATION DOES NOT WORK
-          //TODO: SHOULD TRY TO CREATE A LIST OF NUMBERS FOR THE ELEMENTS TO SCROLL
-
+          }
 
           for (var i = 0; i < slidesToArange.length; i++) {
             this._slides[slidesToArange[i]].style.transform = "translate3d(" + (direction === Direction.Prev ? '-' : '') + (i + 1) * 100 + "%, 0, 0)";
           } // Trigger the animation to slide of index
 
+
+          var multiplier = direction === Direction.Prev ? this._actors.active[0] - index : index - this._actors.active[0];
+          this._elem.style.transform = "translate3d(" + (direction === Direction.Prev ? '' : '-') + 100 * multiplier + "%, 0, 0)"; // this._elem.style.transform = `translate3d(${100 * multiplier}%, 0, 0)`;
         }
       },
       enumerable: false,

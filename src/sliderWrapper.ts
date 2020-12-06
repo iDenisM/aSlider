@@ -87,6 +87,9 @@ export class SliderWrapper {
         this._slides[slidesToArange[i]].style.transform = `translate3d(${direction === Direction.Prev ? '-' : ''}${(i + 1) * 100}%, 0, 0)`;
       }
       // Trigger the animation to slide of index
+      let multiplier = direction === Direction.Prev ? this._actors.active[0] - index : index - this._actors.active[0];
+      this._elem.style.transform = `translate3d(${direction === Direction.Prev ? '' : '-'}${100 * multiplier}%, 0, 0)`
+      // this._elem.style.transform = `translate3d(${100 * multiplier}%, 0, 0)`;
     }
   }
 
