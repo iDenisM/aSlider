@@ -5,7 +5,9 @@ export interface IOptions {
   wrapperSelector: string,
   controls: IControls,
   navigation: string
-  slides: ISlides
+  slides: ISlides,
+  lastSlideIndex: number,
+  slidesIndex: ICurrentActors
 }
 
 interface IControls {
@@ -32,6 +34,12 @@ export const Options: IOptions = {
     activeSlideSelector: '.'.concat(Classes.slides.active),
     prevSlideSelector: '.'.concat(Classes.slides.prev),
     nextSlideSelector: '.'.concat(Classes.slides.next)
+  },
+  lastSlideIndex: 0,
+  slidesIndex: {
+    active: [0],
+    next: [1],
+    prev: []
   }
 }
 
